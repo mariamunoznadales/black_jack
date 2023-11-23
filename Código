@@ -1,0 +1,89 @@
+import random
+
+#Definir la funcion que obtenga el valor de la carta
+def obtener_valor_carta(cartas, carta):
+    return cartas[carta]
+
+#Definir la funcion que muestre la combinación de cartas
+def mostrar_combinacion(combinacion):
+    print("Combinacion: ", end="")
+    for carta in combinacion:
+        print(carta, end=" ")
+    print()
+
+def jugar_blackjack():
+    # Valores de las cartas
+    valores_cartas = {
+        'As': 11, 'Dos': 2, 'Tres': 3, 'Cuatro': 4, 'Cinco': 5,
+        'Seis': 6, 'Siete': 7, 'Ocho': 8, 'Nueve': 9, 'Diez': 10,
+        'Jota': 10, 'Reina': 10, 'Rey': 10
+    }
+
+    # Lista de cartas posibles
+    lista_cartas = list(valores_cartas.keys())
+
+    # Combinación del jugador y la banca
+    combinacion_jugador = []
+    combinacion_banca = []
+
+    # Escoger dos cartas para el jugador
+    for _ in range(2):
+        carta = random.choice(lista_cartas)
+        combinacion_jugador.append(carta)
+        lista_cartas.remove(carta)
+
+    # Escoger dos cartas para la banca
+    for _ in range(2):
+        carta = random.choice(lista_cartas)
+        combinacion_banca.append(carta)
+        lista_cartas.remove(carta)
+
+    # Mostrar las combinaciones iniciales y reglas
+    print("Bienvenido a blackjack!")
+    print("Tienes que llegar a 21 sin pasarte con tu combinación de cartas.")
+    print("La banca te enseña una de sus cartas y tienes que decidir si crees que con las tuyas ganas (NO COGER OTRA) o pierdes (CAMBIAR DE CARTA)")
+    mostrar_combinacion(combinacion_jugador)
+    print("La banca muestra primero una carta:", combinacion_banca[0])
+
+    # Puntuación inicial del jugador y la banca
+    cartas_jugador = sum([obtener_valor_carta(valores_cartas, carta) for carta in combinacion_jugador])
+    cartas_banca = sum([obtener_valor_carta(valores_cartas, carta) for carta in combinacion_banca])
+
+    # Turno del jugador
+    while cartas_jugador < 21:
+        opcion = input("Quieres tomar otra carta? (s/n): ")
+        if opcion.lower() == 's':
+            carta_nueva = random.choice(lista_cartas)
+            combinacion_jugador.append(carta_nueva)
+            lista_cartas.remove(carta_nueva)
+            cartas_jugador += obtener_valor_carta(valores_cartas, carta_nueva)
+            mostrar_combinacion(combinacion_jugador)
+        else:
+            break
+
+    # Turno de la banca
+    while cartas_banca < 18:
+        carta_nueva = random.choice(lista_cartas)
+        combinacion_banca.append(carta_nueva)
+        lista_cartas.remove(carta_nueva)
+        cartas_banca += obtener_valor_carta(valores_cartas, carta_nueva)
+
+    # Mostrar combinaciones finales
+    print("Mano final del jugador:")
+    mostrar_combinacion(combinacion_jugador)
+    print("Puntuación del jugador:", cartas_jugador)
+
+    print("Mano final de la banca:")
+    mostrar_combinacion(combinacion_banca)
+    print("Puntuación de la banca:", cartas_banca)
+
+    # Condicional de quien ha ganado
+    if cartas_jugador == 21 or (cartas_banca > 21) or (cartas_jugador <= 21 and cartas_jugador > cartas_banca):
+        print("Felicidades! Has ganado!")
+    elif cartas_jugador == cartas_banca:
+        print("Empate!")
+    else:
+        print("La banca gana.")
+
+if __name__ == "__main__":
+    jugar_blackjack()
